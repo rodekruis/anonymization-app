@@ -40,7 +40,6 @@ jobs:
       with:
         app-name: 'anlnymization-app'
         images: 'ukrainedigitalcea.azurecr.io/anonymization-api:${{ github.sha }}'
-        slot-name: 'staging'
 
 
     - name: Azure logout
