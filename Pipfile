@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 fastapi = "*"
 uvicorn = "*"
+presidio-analyzer = "*"
+presidio-anonymizer = "*"
 
 [dev-packages]
 

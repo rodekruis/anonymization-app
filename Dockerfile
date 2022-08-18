@@ -13,6 +13,9 @@ WORKDIR /app
 RUN pip install pipenv
 RUN pipenv install --system --deploy --ignore-pipfile
 
+# download spaCy language model
+RUN python -m spacy download en_core_web_sm
+
 # expose the port that uvicorn will run the app on
 ENV PORT=8000
 EXPOSE 8000
