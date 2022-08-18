@@ -14,7 +14,21 @@ class ModelName(str, Enum):
 port = os.environ["PORT"]
 
 # initialize FastAPI
-app = FastAPI()
+app = FastAPI(
+    title="anonymization-app",
+    description="Remove personally identifiable information from text.",
+    version="0.0.1",
+    terms_of_service="http://example.com/terms/",
+    contact={
+        "name": "510 an Initiative of the Netherlands Red Cross",
+        "url": "https://www.510.global/",
+        "email": "support@510.global",
+    },
+    license_info={
+        "name": "GNU Affero General Public License v3.0",
+        "url": "https://www.gnu.org/licenses/agpl-3.0.en.html",
+    },
+)
 
 # Set up the engine, loads the NLP module (spaCy model by default) and other PII recognizers
 analyzer = AnalyzerEngine()
