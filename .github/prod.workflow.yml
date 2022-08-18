@@ -1,0 +1,48 @@
+name: Build and deploy to production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout GitHub Actions
+      uses: actions/checkout@main
+
+
+    - name: Login via Azure CLI
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+
+    - name: Login to Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: ukrainedigitalcea.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+
+
+    - name: Build and push container image to registry
+      run: |
+        docker build . -t ukrainedigitalcea.azurecr.io/anonymization-api:${{ github.sha }}
+        docker push ukrainedigitalcea.azurecr.io/anonymization-api:${{ github.sha }}
+
+
+    - name: Deploy to App Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'anlnymization-app'
+        images: 'ukrainedigitalcea.azurecr.io/anonymization-api:${{ github.sha }}'
+        slot-name: 'staging'
+
+
+    - name: Azure logout
+      run: |
+        az logout
