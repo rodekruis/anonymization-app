@@ -65,8 +65,5 @@ async def get_model(model_name: ModelName):
         raise HTTPException(status_code=404, detail=f"Model {model_name} not found")
 
 
-@app.get("/demo")
-
-
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)

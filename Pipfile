@@ -9,6 +9,7 @@ uvicorn = "*"
 presidio-analyzer = "*"
 presidio-anonymizer = "*"
 streamlit = "*"
+email-validator = "*"
 
 [dev-packages]
 
