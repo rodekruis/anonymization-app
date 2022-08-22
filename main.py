@@ -22,13 +22,9 @@ port = os.environ["PORT"]
 # initialize FastAPI
 app = FastAPI(
     title="anonymize-app",
-    description="Remove personally identifiable information from text. See [the project on GitHub](https://github.com/rodekruis/anonymization-app).",
+    description="Remove personally identifiable information from text. \n"
+                "Built with love by [NLRC 510](https://www.510.global/). See [the project on GitHub](https://github.com/rodekruis/anonymization-app) or [contact us](mailto:support@510.global).",
     version="0.0.1",
-    contact={
-        "name": "NLRC 510",
-        "url": "https://www.510.global/",
-        "email": "support@510.global",
-    },
     license_info={
         "name": "AGPL-3.0 license",
         "url": "https://www.gnu.org/licenses/agpl-3.0.en.html",
@@ -42,7 +38,7 @@ anonymizer = AnonymizerEngine()
 
 @app.get("/")
 def index():
-    return {"data": "Application ran successfully - FastAPI release v2.0"}
+    return {"data": "Welcome to anonymize-app!"}
 
 
 @app.post("/anonymize/")
