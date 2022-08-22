@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 from presidio_analyzer import AnalyzerEngine
 from presidio_anonymizer import AnonymizerEngine
 import os
@@ -8,6 +9,11 @@ from enum import Enum
 
 class ModelName(str, Enum):
     presidio = "presidio"
+
+
+class AnonymizePayload(BaseModel):
+    text: str
+    model: str | None = ModelName.presidio
 
 
 # load environment variables
@@ -39,20 +45,20 @@ def index():
     return {"data": "Application ran successfully - FastAPI release v2.0"}
 
 
-@app.post("/anonymize/{text}")
-async def anonymize_text(text: str, model_name: str = "presidio"):
-    if model_name == ModelName.presidio:
+@app.post("/anonymize/")
+async def anonymize_text(payload: AnonymizePayload):
+    if payload.model == ModelName.presidio:
         analyzer_results = analyzer.analyze(
-            text=text,
+            text=payload.text,
             score_threshold=0.,
             language='en')
         anonymized_results = anonymizer.anonymize(
-            text=text,
+            text=payload.text,
             analyzer_results=analyzer_results
         )
         anonymized_text = anonymized_results.text
     else:
-        raise HTTPException(status_code=404, detail=f"Model {model_name} not found")
+        raise HTTPException(status_code=404, detail=f"Model {payload.model} not found")
 
     return {"anonymized_text": anonymized_text}
 
