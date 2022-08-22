@@ -14,11 +14,11 @@ RUN pip install pipenv
 RUN pipenv install --system --deploy --ignore-pipfile
 
 # download spaCy language model
-RUN pipenv run python -m spacy download en_core_web_lg
+RUN python -m spacy download en_core_web_lg
 
 # expose the port that uvicorn will run the app on
 ENV PORT=8000
 EXPOSE 8000
 
 # execute the command python main.py (in the WORKDIR) to start the app
-CMD ["pipenv", "run", "python", "main.py"]
+CMD ["python", "main.py"]
