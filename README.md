@@ -1,19 +1,19 @@
 # anonymization-app
-Remove personally identifiable information from text.
+Remove personally identifiable information from text, at scale.
 
-API is publicly accessible at [https://anonymization-app.azurewebsites.net/](https://anonymization-app.azurewebsites.net/).
+See it action and test it yourself on [the demo version](https://rodekruis-anonymization-app-demo-b7gim4.streamlitapp.com/).
+
+The API is publicly accessible at [https://anonymization-app.azurewebsites.net/](https://anonymization-app.azurewebsites.net/).
 
 ## Description
 
 Synopsis: a [dockerized](https://www.docker.com/) [python](https://www.python.org/) API that removes personally identifiable information (PII) from text.
 
-Worflow: send text and receive text without PII.
+Worflow: POST some text and receive it back without PII.
 
-## Usage
+## API Usage
 
-See it in action here (TBI).
-
-Use it via API as per [documentation](https://anonymization-app.azurewebsites.net/docs).
+See [the documentation](https://anonymization-app.azurewebsites.net/docs).
 
 ## Setup
 
