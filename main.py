@@ -41,7 +41,6 @@ def index():
 
 @app.post("/anonymize/{text}")
 async def anonymize_text(text: str, model_name: str = "presidio"):
-    anonymized_text = ""
     if model_name == ModelName.presidio:
         analyzer_results = analyzer.analyze(
             text=text,
@@ -64,6 +63,9 @@ async def get_model(model_name: ModelName):
         return {"model_name": model_name, "source": "https://microsoft.github.io/presidio/"}
     else:
         raise HTTPException(status_code=404, detail=f"Model {model_name} not found")
+
+
+@app.get("/demo")
 
 
 if __name__ == "__main__":

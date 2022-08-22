@@ -8,6 +8,7 @@ fastapi = "*"
 uvicorn = "*"
 presidio-analyzer = "*"
 presidio-anonymizer = "*"
+streamlit = "*"
 
 [dev-packages]
 
