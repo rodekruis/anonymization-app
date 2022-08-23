@@ -102,7 +102,7 @@ async def get_model(model_name: ModelName):
     elif model_name == ModelName.presidio:
         return {"model_name": model_name, "source": "https://microsoft.github.io/presidio/"}
     elif model_name == ModelName.BERT:
-        return {"model_name": model_name, "source": "https://huggingface.co/bert-base-uncased"}
+        return {"model_name": model_name, "source": "https://huggingface.co/dslim/bert-base-NER"}
     else:
         raise HTTPException(status_code=404, detail=f"Model {model_name} not found")
 
