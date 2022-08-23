@@ -1,5 +1,5 @@
 # python base image in the container from Docker Hub
-FROM python:3.10.6-slim
+FROM python:3.8.8-slim
 
 # copy files to the /app folder in the container
 COPY ./main.py /app/main.py

@@ -3,17 +3,25 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from presidio_analyzer import AnalyzerEngine
 from presidio_anonymizer import AnonymizerEngine
+from transformers import AutoTokenizer, AutoModelForTokenClassification, pipeline
+import re
 import os
 from enum import Enum
 
 
 class ModelName(str, Enum):
+    ensemble = "ensemble"
     presidio = "presidio"
+    BERT = "BERT"
+
+    @classmethod
+    def exists(cls, key):
+        return key in cls.__members__
 
 
 class AnonymizePayload(BaseModel):
     text: str
-    model: str | None = ModelName.presidio
+    model: str = ModelName.ensemble
 
 
 # load environment variables
@@ -31,9 +39,14 @@ app = FastAPI(
     },
 )
 
-# Set up the engine, loads the NLP module (spaCy model by default) and other PII recognizers
+# Initialize presidio
 analyzer = AnalyzerEngine()
 anonymizer = AnonymizerEngine()
+
+# Initialize BERT
+tokenizer = AutoTokenizer.from_pretrained("dslim/bert-base-NER-uncased")
+model = AutoModelForTokenClassification.from_pretrained("dslim/bert-base-NER-uncased")
+pipe = pipeline(model=model, tokenizer=tokenizer, task='ner')
 
 
 @app.get("/")
@@ -43,26 +56,53 @@ def index():
 
 @app.post("/anonymize/")
 async def anonymize_text(payload: AnonymizePayload):
-    if payload.model == ModelName.presidio:
+    text = payload.text
+
+    if payload.model == ModelName.ensemble or payload.model == ModelName.presidio:
         analyzer_results = analyzer.analyze(
-            text=payload.text,
+            text=text,
             score_threshold=0.,
-            language='en')
+            language='en'
+        )
         anonymized_results = anonymizer.anonymize(
-            text=payload.text,
+            text=text,
             analyzer_results=analyzer_results
         )
-        anonymized_text = anonymized_results.text
-    else:
+        text = anonymized_results.text
+
+    if payload.model == ModelName.ensemble or payload.model == ModelName.BERT:
+        entities = pipe(text)
+        # replace detected names (entity: person) with ~~~~
+        for entity in entities:
+            if entity['entity'] in ['B-PER', 'I-PER']:
+                text = text[:entity['start']] + '~' * (entity['end'] - entity['start']) + text[entity['end']:]
+        # replace ~~~~ with <PERSON>
+        names_masks = []
+        for match in re.finditer(r"(~)+", text):
+            names_masks.append(match.group())
+        names_masks.sort(key=lambda s: len(s), reverse=True)
+        for name_mask in names_masks:
+            text = text.replace(name_mask, "<PERSON>")
+
+    if not ModelName.exists(payload.model):
         raise HTTPException(status_code=404, detail=f"Model {payload.model} not found")
 
-    return {"anonymized_text": anonymized_text}
+    # merge multiple names into one
+    for pattern in ["<PERSON><PERSON>", "<PERSON> <PERSON>"]:
+        while pattern in text:
+            text = text.replace(pattern, '<PERSON>')
+
+    return {"anonymized_text": text}
 
 
 @app.get("/models/{model_name}")
 async def get_model(model_name: ModelName):
-    if model_name == ModelName.presidio:
+    if model_name == ModelName.ensemble:
+        return {"model_name": model_name, "source": "combination of all other models"}
+    elif model_name == ModelName.presidio:
         return {"model_name": model_name, "source": "https://microsoft.github.io/presidio/"}
+    elif model_name == ModelName.BERT:
+        return {"model_name": model_name, "source": "https://huggingface.co/bert-base-uncased"}
     else:
         raise HTTPException(status_code=404, detail=f"Model {model_name} not found")
 
