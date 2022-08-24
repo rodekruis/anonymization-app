@@ -1,5 +1,5 @@
 # anonymization-app
-Remove personally identifiable information from text, at scale.
+Remove personally identifiable information from text, at scale, using AI.
 
 See it action and test it yourself on [the demo version](https://rodekruis-anonymization-app-demo-b7gim4.streamlitapp.com/).
 
@@ -14,6 +14,13 @@ Worflow: POST some text and receive it back without PII.
 ## API Usage
 
 See [the documentation](https://anonymization-app.azurewebsites.net/docs).
+
+## Models
+
+All models are basically neural networks trained to perform [Named Entity Recognition (NER)](https://en.wikipedia.org/wiki/Named-entity_recognition). Specifically, they look for person names in text. The following models are currently supported:
+- **ensemble** (default and recommended): use all available models
+- **[presidio](https://microsoft.github.io/presidio/)**: fancy regex + [spaCy](https://spacy.io/) models for NER. Built and maintained by Microsoft.
+- **[BERT](https://huggingface.co/dslim/bert-base-NER)**: BERT model, fine-tuned for NER. Open-source, hosted by HuggingFace.
 
 ## Setup
 
