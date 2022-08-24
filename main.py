@@ -1,4 +1,5 @@
 import uvicorn
+from typing import Union
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from presidio_analyzer import AnalyzerEngine
@@ -7,6 +8,9 @@ from transformers import AutoTokenizer, AutoModelForTokenClassification, pipelin
 import re
 import os
 from enum import Enum
+
+default_entities = ['CREDIT_CARD', 'CRYPTO', 'EMAIL_ADDRESS', 'IBAN_CODE', 'IP_ADDRESS', 'PERSON', 'PHONE_NUMBER',
+                    'MEDICAL_LICENSE', 'URL']
 
 
 class ModelName(str, Enum):
@@ -22,6 +26,7 @@ class ModelName(str, Enum):
 class AnonymizePayload(BaseModel):
     text: str
     model: str = ModelName.ensemble
+    entities: Union[list, None] = default_entities
 
 
 # load environment variables
@@ -61,6 +66,7 @@ async def anonymize_text(payload: AnonymizePayload):
     if payload.model == ModelName.ensemble or payload.model == ModelName.presidio:
         analyzer_results = analyzer.analyze(
             text=text,
+            entities=payload.entities,
             score_threshold=0.,
             language='en'
         )
