@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "anonymization-api"
+version = "0.0.1"
+authors = [
+  "Jacopo Margutti <jmargutti@redcross.nl>"
+]
+description = "Remove personally identifiable information from text."
+readme = "README.md"
+repository = "https://github.com/rodekruis/anonymization-app"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.12"
+fastapi = "*"
+presidio-analyzer = "*"
+presidio-anonymizer = "*"
+torch = "*"
+transformers = "*"
+uvicorn = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
