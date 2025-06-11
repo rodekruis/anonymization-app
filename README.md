@@ -3,7 +3,7 @@ Remove personally identifiable information from text, at scale, using AI.
 
 See it action and test it yourself on [the demo version](https://rodekruis-anonymization-app-demo-b7gim4.streamlitapp.com/).
 
-The API is publicly accessible at [https://anonymization-app.azurewebsites.net/](https://anonymization-app.azurewebsites.net/).
+The API is publicly accessible at [https://anonymization-app.azurewebsites.net](https://anonymization-app.azurewebsites.net/docs).
 
 ## Description
 
